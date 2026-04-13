@@ -1,4 +1,4 @@
-# 🛒 Supermercado API
+# 🛒 E-commerce API
 
 API REST desenvolvida em Java com Spring Boot para gerenciamento de e-commerce de supermercado, permitindo o cadastro de usuários, produtos, pedidos, pagamentos e endereços de entrega.
 
