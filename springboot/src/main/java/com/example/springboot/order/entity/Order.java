@@ -2,6 +2,7 @@ package com.example.springboot.order.entity;
 
 import com.example.springboot.address.entity.Address;
 import com.example.springboot.orderItem.entity.OrderItem;
+import com.example.springboot.payment.entity.Payment;
 import com.example.springboot.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -55,6 +56,9 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private List<OrderItem> items;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Payment payment;
 
     @PrePersist
     public void prePersist() {

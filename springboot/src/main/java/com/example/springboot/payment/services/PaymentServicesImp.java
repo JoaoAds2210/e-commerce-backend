@@ -77,7 +77,7 @@ public class PaymentServicesImp implements PaymentServices {
             throw new RuntimeException("Payment already exists");
         }
 
-        Payment payment = PaymentMapper.toEntity(dto);
+        Payment payment = PaymentMapper.toEntity(dto, order);
 
         payment.setOrder(order);
         payment.setAmount(order.getTotalAmount());

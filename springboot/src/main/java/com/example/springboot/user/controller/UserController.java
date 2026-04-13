@@ -6,6 +6,10 @@ import com.example.springboot.user.dtos.UserUpdateDTO;
 import com.example.springboot.user.entity.User;
 import com.example.springboot.user.mapper.UserMapper;
 import com.example.springboot.user.service.UserServicesImp;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +19,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "Usuarios", description = "Gerenciamento de usuários")
 public class UserController {
 
     @Autowired
     private UserServicesImp userServices;
 
+    @Operation(summary = "Listar todos os usuários")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    })
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAll() {
 
@@ -28,6 +37,11 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @Operation(summary = "Buscar pet por ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuário encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
 
@@ -36,6 +50,10 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @Operation(summary = "Listar todos os tutores")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    })
     @GetMapping("/email/{email}")
     public ResponseEntity<UserResponseDTO> findByEmail(@PathVariable String email) {
 
@@ -44,6 +62,12 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @Operation(summary = "cadastrar usuarios")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Usuário cadastrado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
     @PostMapping
     public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid UserCreateDTO dto) {
 

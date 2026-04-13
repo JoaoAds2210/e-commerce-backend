@@ -1,5 +1,6 @@
 package com.example.springboot.payment.mapper;
 
+import com.example.springboot.order.entity.Order;
 import com.example.springboot.payment.dtos.PaymentCreateDTO;
 import com.example.springboot.payment.dtos.PaymentResponseDTO;
 import com.example.springboot.payment.entity.Payment;
@@ -7,8 +8,9 @@ import com.example.springboot.payment.entity.Payment;
 
 public class PaymentMapper {
 
-    public static Payment toEntity (PaymentCreateDTO dto){
+    public static Payment toEntity (PaymentCreateDTO dto, Order order){
         return Payment.builder()
+                .order(order)
                 .method(dto.method())
                 .payerEmail(dto.payerEmail())
                 .payerDocument(dto.payerDocument())

@@ -1,5 +1,6 @@
 package com.example.springboot.product.entity;
 
+import com.example.springboot.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
