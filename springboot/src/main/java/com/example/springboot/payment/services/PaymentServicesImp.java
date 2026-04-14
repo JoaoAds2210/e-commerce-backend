@@ -13,7 +13,8 @@ import com.example.springboot.payment.mapper.PaymentMapper;
 import com.example.springboot.payment.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.example.springboot.payment.kafka.PaymentEventProducer;
+import com.example.springboot.kafka.events.PaymentConfirmedEvent;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +27,8 @@ public class PaymentServicesImp implements PaymentServices {
     private PaymentRepository paymentRepository;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private PaymentEventProducer paymentEventProducer;
 
     @Override
     public List<PaymentResponseDTO> findAll() {
@@ -126,8 +129,14 @@ public class PaymentServicesImp implements PaymentServices {
         if (dto.status() == PaymentStatus.PAID) {
             payment.setPaidAt(LocalDateTime.now());
 
-            Order order = payment.getOrder();
-            order.setStatus(OrderStatus.PAID);
+            PaymentConfirmedEvent event = new PaymentConfirmedEvent(
+                    payment.getId(),
+                    payment.getOrder().getId(),
+                    payment.getAmount(),
+                    payment.getPaidAt()
+            );
+
+            paymentEventProducer.sendPaymentConfirmed(event);
         }
 
         Payment updated = paymentRepository.save(payment);

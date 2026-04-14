@@ -2,11 +2,13 @@ package com.example.springboot.order.services;
 
 import com.example.springboot.address.entity.Address;
 import com.example.springboot.address.repository.AddressRepository;
+import com.example.springboot.kafka.events.OrderCreatedEvent;
 import com.example.springboot.order.dto.OrderCreateDTO;
 import com.example.springboot.order.dto.OrderResponseDTO;
 import com.example.springboot.order.dto.OrderUpdateDTO;
 import com.example.springboot.order.entity.Order;
 import com.example.springboot.order.entity.OrderStatus;
+import com.example.springboot.order.kafka.OrderEventProducer;
 import com.example.springboot.order.mapper.OrderMapper;
 import com.example.springboot.order.repository.OrderRepository;
 import com.example.springboot.orderItem.dtos.OrderItemCreateDTO;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,8 @@ public class OrderServiceImp implements OrderService {
     private AddressRepository addressRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private OrderEventProducer orderEventProducer;
 
 
     @Override
@@ -110,6 +115,20 @@ public class OrderServiceImp implements OrderService {
         order.setTotalAmount(total);
 
         orderRepository.save(order);
+
+        List<Long> productIds = items.stream()
+                .map(item -> item.getProduct().getId())
+                .toList();
+
+        OrderCreatedEvent event = new OrderCreatedEvent(
+                order.getId(),
+                user.getId(),
+                order.getTotalAmount(),
+                productIds,
+                LocalDateTime.now()
+        );
+
+        orderEventProducer.sendOrderCreated(event);
 
         return OrderMapper.toDTO(order);
     }
