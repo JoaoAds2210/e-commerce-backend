@@ -131,15 +131,11 @@ public class OrderServiceImp implements OrderService {
 
         orderRepository.save(order);
 
-        List<Long> productIds = items.stream()
-                .map(item -> item.getProduct().getId())
-                .toList();
-
         OrderCreatedEvent event = new OrderCreatedEvent(
                 order.getId(),
                 user.getId(),
                 order.getTotalAmount(),
-                productIds,
+                productQuantities,
                 LocalDateTime.now()
         );
 
