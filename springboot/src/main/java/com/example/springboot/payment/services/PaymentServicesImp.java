@@ -48,7 +48,7 @@ public class PaymentServicesImp implements PaymentServices {
 
     @Override
     public List<PaymentResponseDTO> findByMethodPayment(PaymentMethod method) {
-        return paymentRepository.findByMethodPayment(method)
+        return paymentRepository.findByMethod(method)
                 .stream()
                 .map(PaymentMapper::toDTO)
                 .toList();
@@ -56,7 +56,7 @@ public class PaymentServicesImp implements PaymentServices {
 
     @Override
     public List<PaymentResponseDTO> findByStatusPayment(PaymentStatus status) {
-        return paymentRepository.findByStatusPayment(status)
+        return paymentRepository.findByStatus(status)
                 .stream()
                 .map(PaymentMapper::toDTO)
                 .toList();

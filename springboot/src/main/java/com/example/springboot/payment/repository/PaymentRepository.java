@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
-    List<Payment> findByMethodPayment(PaymentMethod method);
+    List<Payment> findByMethod(PaymentMethod method);
 
-    List<Payment> findByStatusPayment(PaymentStatus status);
+    List<Payment> findByStatus(PaymentStatus status);
 
     boolean existsByOrder(Order order);
 }
