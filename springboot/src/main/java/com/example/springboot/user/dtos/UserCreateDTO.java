@@ -25,6 +25,7 @@ public record UserCreateDTO(
                 regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).+$",
                 message = "A senha deve conter ao menos uma letra maiúscula, um número e um caractere especial"
         )
+        String password,
 
         @NotNull
         LocalDate birthDate
