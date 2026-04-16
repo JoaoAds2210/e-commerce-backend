@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,11 +47,7 @@ public class User {
     private LocalDate birthDate;
 
     @NotBlank
-    @Size(min = 8, max = 255)
-    @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).+$",
-            message = "Senha deve conter maiúscula, minúscula e número"
-    )
+    @Column(nullable = false)
     private String passwordHash;
 
     @NotBlank

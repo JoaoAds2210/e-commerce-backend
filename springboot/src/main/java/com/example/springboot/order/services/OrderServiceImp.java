@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderServiceImp implements OrderService {
@@ -90,16 +92,29 @@ public class OrderServiceImp implements OrderService {
                 .status(OrderStatus.PENDING)
                 .build();
 
-        List<OrderItem> items = new ArrayList<>();
+        Map<Long, Integer> productQuantities = new HashMap<>();
 
         for (OrderItemCreateDTO itemDTO : dto.items()) {
-            Product product = productRepository.findById(itemDTO.productId())
+            productQuantities.merge(
+                    itemDTO.productId(),
+                    itemDTO.quantity(),
+                    Integer::sum
+            );
+        }
+
+        List<OrderItem> items = new ArrayList<>();
+
+        for (Map.Entry<Long, Integer> entry : productQuantities.entrySet()) {
+            Long productId = entry.getKey();
+            Integer quantity = entry.getValue();
+
+            Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new RuntimeException("Product not found"));
 
             OrderItem item = OrderItem.builder()
                     .order(order)
                     .product(product)
-                    .quantity(itemDTO.quantity())
+                    .quantity(quantity)
                     .price(product.getPrice())
                     .build();
 

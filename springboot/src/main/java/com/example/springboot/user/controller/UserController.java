@@ -3,8 +3,6 @@ package com.example.springboot.user.controller;
 import com.example.springboot.user.dtos.UserCreateDTO;
 import com.example.springboot.user.dtos.UserResponseDTO;
 import com.example.springboot.user.dtos.UserUpdateDTO;
-import com.example.springboot.user.entity.User;
-import com.example.springboot.user.mapper.UserMapper;
 import com.example.springboot.user.service.UserServicesImp;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -78,16 +76,24 @@ public class UserController {
                 .body(user);
     }
 
+    @Operation(summary = "Atualizar usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Atualizado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> update(
-            @PathVariable Long id,
-            @RequestBody @Valid UserUpdateDTO dto) {
+    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @RequestBody @Valid UserUpdateDTO dto) {
 
         UserResponseDTO user = userServices.update(id, dto);
 
         return ResponseEntity.ok(user);
     }
 
+    @Operation(summary = "Desativar usuário")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Desativado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
 

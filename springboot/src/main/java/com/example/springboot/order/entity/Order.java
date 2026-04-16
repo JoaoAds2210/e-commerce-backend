@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Table(name = "orders")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,8 +38,6 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status;
 
-    @NotNull
-    @Positive
     @Column(nullable = false)
     private BigDecimal totalAmount;
 
@@ -47,14 +46,13 @@ public class Order {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)

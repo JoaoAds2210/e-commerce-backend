@@ -64,7 +64,7 @@ public class ProductServicesImp implements ProductServices{
         Category category = categoryRepository.findById(dto.categoryId())
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
-        Product product = ProductMapper.toEntity(dto);
+        Product product = ProductMapper.toEntity(dto, category);
 
         Product savedProduct = productRepository.save(product);
 
@@ -102,8 +102,10 @@ public class ProductServicesImp implements ProductServices{
             oldProduct.setActive(dto.active());
         }
 
-        if (dto.category() != null) {
-            oldProduct.setCategory(dto.category());
+        if (dto.categoryId() != null) {
+            Category category = categoryRepository.findById(dto.categoryId())
+                    .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+            oldProduct.setCategory(category);
         }
 
         Product savedProduct = productRepository.save(oldProduct);

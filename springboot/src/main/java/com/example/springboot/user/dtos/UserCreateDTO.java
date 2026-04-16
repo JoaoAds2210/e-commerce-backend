@@ -1,9 +1,6 @@
 package com.example.springboot.user.dtos;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -24,7 +21,10 @@ public record UserCreateDTO(
 
         @NotBlank
         @Size(min = 8)
-        String password,
+        @Pattern(
+                regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).+$",
+                message = "A senha deve conter ao menos uma letra maiúscula, um número e um caractere especial"
+        )
 
         @NotNull
         LocalDate birthDate

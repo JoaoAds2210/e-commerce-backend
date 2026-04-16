@@ -2,7 +2,6 @@ package com.example.springboot.orderItem.services;
 
 
 import com.example.springboot.order.entity.Order;
-import com.example.springboot.order.mapper.OrderMapper;
 import com.example.springboot.order.repository.OrderRepository;
 import com.example.springboot.orderItem.dtos.OrderItemCreateDTO;
 import com.example.springboot.orderItem.dtos.OrderItemResponseDTO;
@@ -23,7 +22,6 @@ public class OrderItemServiceImp implements OrderItemService {
 
     @Autowired
     private OrderItemRepository orderItemRepository;
-
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
@@ -39,9 +37,8 @@ public class OrderItemServiceImp implements OrderItemService {
 
     @Override
     public List<OrderItemResponseDTO> findByOrderId(Long orderId) {
-        List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
-
-        return orderItems.stream()
+        return orderItemRepository.findByOrderId(orderId)
+                .stream()
                 .map(OrderItemMapper::toDTO)
                 .collect(Collectors.toList());
     }

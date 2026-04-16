@@ -11,6 +11,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -35,27 +37,31 @@ public class StockConsumer {
             OrderCreatedEvent event =
                     objectMapper.readValue(record.value(), OrderCreatedEvent.class);
 
-            for (Long productId : event.productIds()) {
+            for (Map.Entry<Long, Integer> entry : event.productQuantities().entrySet()) {
+                Long productId = entry.getKey();
+                int quantityToDeduct = entry.getValue();
 
                 Product product = productRepository.findById(productId)
                         .orElseThrow(() -> new RuntimeException(
                                 "Produto não encontrado | productId=" + productId));
 
-                if (product.getStockQuantity() <= 0) {
-                    log.warn("[Kafka] Produto sem estoque | productId={}", productId);
+                if (product.getStockQuantity() < quantityToDeduct) {
+                    log.warn("[Kafka] Estoque insuficiente | productId={} | disponível={} | solicitado={}",
+                            productId, product.getStockQuantity(), quantityToDeduct);
                     continue;
                 }
 
-                product.setStockQuantity(product.getStockQuantity() - 1);
+                product.setStockQuantity(product.getStockQuantity() - quantityToDeduct);
                 productRepository.save(product);
+
+                log.info("[Kafka] Estoque atualizado | productId={} | novoEstoque={}",
+                        productId, product.getStockQuantity());
             }
 
-            ack.acknowledge(); // ✅ confirma processamento
+            ack.acknowledge();
 
         } catch (Exception ex) {
             log.error("[Kafka] Erro ao processar order.created | payload={}", record.value(), ex);
-
-            // evita loop infinito em caso de mensagem inválida
             ack.acknowledge();
         }
     }

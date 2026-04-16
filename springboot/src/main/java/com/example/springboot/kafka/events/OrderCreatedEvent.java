@@ -2,12 +2,12 @@ package com.example.springboot.kafka.events;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 
 public record OrderCreatedEvent(
         Long orderId,
         Long userId,
         BigDecimal totalAmount,
-        List<Long> productIds,
+        Map<Long, Integer> productQuantities,
         LocalDateTime createdAt
 ) {}
